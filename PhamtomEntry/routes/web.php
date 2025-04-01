@@ -15,5 +15,5 @@ use App\Http\Controllers\VisitanteController;
 
 Route::resource('empleados', EmpleadoController::class);
 Route::resource('razonesVisitas', RazonVisitaController::class);
-Route::resource('registroVisita', RegistroVisitaController::class);
-Route::resource('visitante', VisitanteController::class);
+Route::resource('registrosVisitas', RegistroVisitaController::class);
+Route::resource('visitantes', VisitanteController::class);

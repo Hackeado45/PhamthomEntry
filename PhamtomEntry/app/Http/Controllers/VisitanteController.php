@@ -2,63 +2,75 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Visitante;
 use Illuminate\Http\Request;
 
 class VisitanteController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // Mostrar todos los visitantes
     public function index()
     {
-        //
+        $visitantes = Visitante::all();  // Obtener todos los registros de la tabla Visitantes
+        return view('visitantes.index', compact('visitantes'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    // Mostrar el formulario para crear un nuevo visitante
     public function create()
     {
-        //
+        return view('visitantes.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Almacenar un nuevo visitante en la base de datos
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'identificacion' => 'required|string|max:50|unique:visitantes',
+            'telefono' => 'nullable|string|max:15',
+            'email' => 'nullable|email|max:100',
+        ]);
+
+        Visitante::create($request->all());  // Crear un nuevo visitante
+
+        return redirect()->route('visitantes.index');  // Redirigir al índice de visitantes
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    // Mostrar los detalles de un visitante
+    public function show($id)
     {
-        //
+        $visitante = Visitante::findOrFail($id);  // Buscar al visitante por ID
+        return view('visitantes.show', compact('visitante'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    // Mostrar el formulario para editar un visitante
+    public function edit($id)
     {
-        //
+        $visitante = Visitante::findOrFail($id);  // Buscar al visitante por ID
+        return view('visitantes.edit', compact('visitante'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    // Actualizar los detalles de un visitante en la base de datos
+    public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'identificacion' => 'required|string|max:50|unique:visitantes,identificacion,' . $id,
+            'telefono' => 'nullable|string|max:15',
+            'email' => 'nullable|email|max:100',
+        ]);
+
+        $visitante = Visitante::findOrFail($id);  // Buscar al visitante por ID
+        $visitante->update($request->all());  // Actualizar los datos del visitante
+
+        return redirect()->route('visitantes.index');  // Redirigir al índice de visitantes
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    // Eliminar un visitante
+    public function destroy($id)
     {
-        //
+        $visitante = Visitante::findOrFail($id);  // Buscar al visitante por ID
+        $visitante->delete();  // Eliminar al visitante
+
+        return redirect()->route('visitantes.index');  // Redirigir al índice de visitantes
     }
 }
